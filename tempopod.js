@@ -28,6 +28,11 @@ fetch(feedUrl)
         });
       }
     }
+
+    if (episodes.length === 0) {
+      throw new Error("El feed no contiene items.");
+    }
+
     return selectEpisodes(episodes, selectedTempo);
   })
   .then((selectedEpisodes) =>
