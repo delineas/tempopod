@@ -41,6 +41,18 @@ fetch(feedUrl)
   .catch((error) => console.error(error));
 
 function selectEpisodes(episodes, tempo) {
+  if (episodes.length === 0) {
+    throw new Error("No hay episodios disponibles para seleccionar.");
+  }
+
+  const minDuration = Math.min(...episodes.map((episode) => episode.duration));
+
+  if (tempo * 60 < minDuration) {
+    throw new Error(
+      `El tiempo seleccionado es menor que el episodio más corto de ${minDuration} segundos.`
+    );
+  }
+
   let selected = [];
   let totalTime = 0;
   episodes = episodes.sort(() => 0.5 - Math.random());
