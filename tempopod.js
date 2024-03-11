@@ -5,7 +5,12 @@ const feedUrl =
   "https://raw.githubusercontent.com/webreactiva-devs/reto-tempopod/main/feed/webreactiva.xml";
 
 fetch(feedUrl)
-  .then((response) => response.text())
+  .then((response) => {
+    if (!response.ok) {
+      throw new Error(`Error al acceder al feed URL: ${feedUrl}`);
+    }
+    return response.text();
+  })
   .then((str) => {
     const episodes = [];
     const itemRegex = /<item>(.*?)<\/item>/gs;
@@ -28,7 +33,7 @@ fetch(feedUrl)
   .then((selectedEpisodes) =>
     console.log("Episodios seleccionados:", selectedEpisodes)
   )
-  .catch((error) => console.error("Error:", error));
+  .catch((error) => console.error(error));
 
 function selectEpisodes(episodes, tempo) {
   let selected = [];
