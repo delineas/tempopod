@@ -1,5 +1,10 @@
 # Solución al [Reto Tempopod de Web Reactiva](https://github.com/webreactiva-devs/reto-tempopod)
 
+## Instalación
+
+- Clonar el repostiorio
+- `npm install`
+
 ## Modo de empleo
 
 ```
@@ -29,6 +34,13 @@ node tempopod.js 45 https://raw.githubusercontent.com/webreactiva-devs/reto-temp
 ```
 node tempopod.js 45 https://raw.githubusercontent.com/webreactiva-devs/reto-tempopod/main/feed/episodes-whithout-duration.xml
 ```
+
+## Tests
+
+`npm run test`
+
+Code Coverage: `npx vitest run --coverage`
+
 
 ---
 
