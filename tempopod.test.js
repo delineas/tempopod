@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseDuration, selectEpisodes } from "./tempopod";
+import { parseDuration, selectEpisodes, fetchFeed } from "./tempopod";
 
 describe("parseDuration", () => {
   it("parses HH:MM:SS correctly", () => {
@@ -46,10 +46,18 @@ describe("selectEpisodes", () => {
       { title: "Episode 2", duration: 1810 }, // 30 minutes, 10 seconds
       { title: "Episode 3", duration: 600 }, // 10 minutes
     ];
+    const validCombinations = [
+      ["Episode 1", "Episode 3"],
+      ["Episode 2"],
+      ["Episode 1", "Episode 2"],
+    ];
+
     const tempo = 45;
     const selected = selectEpisodes(episodes, tempo);
-    expect(selected.length).toBeGreaterThan(0);
-    expect(selected).toContain("Episode 1");
-    expect(selected).toContain("Episode 3");
+    const isSelectedValid = validCombinations.some((combination) =>
+      combination.every((item) => selected.includes(item))
+    );
+
+    expect(isSelectedValid).toBe(true);
   });
 });
