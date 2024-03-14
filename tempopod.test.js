@@ -1,5 +1,7 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { parseDuration, selectEpisodes, fetchFeed } from "./tempopod";
+
+global.fetch = vi.fn();
 
 describe("parseDuration", () => {
   it("parses HH:MM:SS correctly", () => {
@@ -59,5 +61,55 @@ describe("selectEpisodes", () => {
     );
 
     expect(isSelectedValid).toBe(true);
+  });
+});
+
+describe("fetchFeed", () => {
+  it("handles no episodes", async () => {
+    const emptyFeed = "<rss><channel></channel></rss>";
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      text: () => Promise.resolve(emptyFeed),
+    });
+
+    await expect(fetchFeed("http://example.com/empty.xml")).rejects.toThrow();
+  });
+
+  it("handles no episodes of that duration", async () => {
+    const noMatchingDurationFeed =
+      "<rss><channel><item><title>Episode 1</title><itunes:duration>1600</itunes:duration></item></channel></rss>";
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      text: () => Promise.resolve(noMatchingDurationFeed),
+    });
+
+    const episodes = await fetchFeed(
+      "http://example.com/no-matching-duration.xml"
+    );
+    expect(() => selectEpisodes(episodes, 1).toThrow());
+  });
+
+  it("handles <itunes:duration> in MM:SS format", async () => {
+    const feedWithMMSSDuration =
+      "<rss><channel><item><title>Episode 1</title><itunes:duration>15:30</itunes:duration></item></channel></rss>";
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      text: () => Promise.resolve(feedWithMMSSDuration),
+    });
+
+    const episodes = await fetchFeed("http://example.com/mmss-duration.xml");
+    expect(episodes[0].duration).toBe(930); // 15:30 minutes
+  });
+
+  it("handles missing <itunes:duration> tag", async () => {
+    const feedWithoutDurationTag =
+      "<rss><channel><item><title>Episode 1</title></item><item><title>Episode 2</title><itunes:duration>1600</itunes:duration></item></channel></rss>";
+    fetch.mockResolvedValueOnce({
+      ok: true,
+      text: () => Promise.resolve(feedWithoutDurationTag),
+    });
+
+    const episodes = await fetchFeed("http://example.com/missing-duration.xml");
+    expect(() => selectEpisodes(episodes, 100)[0].duration.toBeUndefined());
   });
 });
