@@ -57,7 +57,9 @@ describe("selectEpisodes", () => {
     const tempo = 45;
     const selected = selectEpisodes(episodes, tempo);
     const isSelectedValid = validCombinations.some((combination) =>
-      combination.every((item) => selected.includes(item))
+      combination.every((item) =>
+        selected.map((item) => item.title).includes(item)
+      )
     );
 
     expect(isSelectedValid).toBe(true);
@@ -65,7 +67,6 @@ describe("selectEpisodes", () => {
 });
 
 describe("fetchFeed", () => {
-
   it("should throw an error if the response is not ok", async () => {
     const fakeUrl = "https://example.com/feed";
 
@@ -124,5 +125,30 @@ describe("fetchFeed", () => {
 
     const episodes = await fetchFeed("http://example.com/missing-duration.xml");
     expect(() => selectEpisodes(episodes, 100)[0].duration.toBeUndefined());
+  });
+});
+
+describe("Output format", () => {
+  it("should produce an array of episodes with title, duration, and link", () => {
+    const episodes = [
+      { title: "Episode 1", duration: 1200, link: "https://link.to.episode1" },
+      { title: "Episode 2", duration: 1300, link: "https://link.to.episode2" },
+    ];
+
+    const selectedEpisodes = selectEpisodes(episodes, 60);
+
+    selectedEpisodes.forEach((episode) => {
+      expect(episode).toHaveProperty("title");
+      expect(episode).toHaveProperty("duration");
+      expect(episode).toHaveProperty("link");
+    });
+
+    selectedEpisodes.forEach((episode) => {
+      expect(episode).toMatchObject({
+        title: expect.any(String),
+        duration: expect.any(Number),
+        link: expect.any(String) || undefined,
+      });
+    });
   });
 });

@@ -32,10 +32,13 @@ export function parseFeed(feedXml) {
     const durationMatch = episodeContent.match(
       /<itunes:duration>(.*?)<\/itunes:duration>/
     );
+    const linkMatch = episodeContent.match(/<link>(.*?)<\/link>/);
+
     if (titleMatch && durationMatch) {
       episodes.push({
         title: titleMatch[1],
         duration: durationMatch ? parseDuration(durationMatch[1]) : undefined,
+        link: linkMatch ? linkMatch[1] : undefined,
       });
     }
   }
@@ -81,7 +84,11 @@ export function selectEpisodes(episodes, tempo) {
 
   for (let episode of episodes) {
     if (totalTime + episode.duration <= tempo * 60) {
-      selected.push(episode.title);
+      selected.push({
+        title: episode.title,
+        duration: episode.duration,
+        link: episode.link,
+      });
       totalTime += episode.duration;
     }
   }
