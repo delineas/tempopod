@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { parseDuration } from "./tempopod";
+import { parseDuration, selectEpisodes } from "./tempopod";
 
 describe("parseDuration", () => {
   it("parses HH:MM:SS correctly", () => {
@@ -24,5 +24,32 @@ describe("parseDuration", () => {
     const durationStr = "02:05:09";
     const expectedSeconds = 2 * 3600 + 5 * 60 + 9;
     expect(parseDuration(durationStr)).toBe(expectedSeconds);
+  });
+});
+
+describe("selectEpisodes", () => {
+  it("throws an error if no episodes are available", () => {
+    const episodes = [];
+    const tempo = 30;
+    expect(() => selectEpisodes(episodes, tempo)).toThrow();
+  });
+
+  it("throws an error if selected time is less than the shortest episode", () => {
+    const episodes = [{ title: "Episode 1", duration: 1800 }]; // 30 minutes
+    const tempo = 15; // 15 minutes
+    expect(() => selectEpisodes(episodes, tempo)).toThrow();
+  });
+
+  it("selects episodes within the given time limit", () => {
+    const episodes = [
+      { title: "Episode 1", duration: 900 }, // 15 minutes
+      { title: "Episode 2", duration: 1810 }, // 30 minutes, 10 seconds
+      { title: "Episode 3", duration: 600 }, // 10 minutes
+    ];
+    const tempo = 45;
+    const selected = selectEpisodes(episodes, tempo);
+    expect(selected.length).toBeGreaterThan(0);
+    expect(selected).toContain("Episode 1");
+    expect(selected).toContain("Episode 3");
   });
 });

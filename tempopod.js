@@ -59,7 +59,7 @@ export function parseDuration(durationStr) {
   return seconds;
 }
 
-function selectEpisodes(episodes, tempo) {
+export function selectEpisodes(episodes, tempo) {
   if (episodes.length === 0) {
     throw new Error("No hay episodios disponibles para seleccionar.");
   }
