@@ -44,7 +44,7 @@ fetch(feedUrl)
   )
   .catch((error) => console.error(error));
 
-function parseDuration(durationStr) {
+export function parseDuration(durationStr) {
   const parts = durationStr.split(":").map(Number);
   let seconds = 0;
 
