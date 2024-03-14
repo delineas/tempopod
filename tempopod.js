@@ -24,7 +24,7 @@ fetch(feedUrl)
       if (titleMatch && durationMatch) {
         episodes.push({
           title: titleMatch[1],
-          duration: parseDuration(durationMatch[1]),
+          duration: durationMatch ? parseDuration(durationMatch[1]) : undefined,
         });
       }
     }
@@ -33,7 +33,11 @@ fetch(feedUrl)
       throw new Error("El feed no contiene items.");
     }
 
-    return selectEpisodes(episodes, selectedTempo);
+    const episodesWithDuration = episodes.filter(
+      (e) => e.duration !== undefined
+    );
+
+    return selectEpisodes(episodesWithDuration, selectedTempo);
   })
   .then((selectedEpisodes) =>
     console.log("Episodios seleccionados:", selectedEpisodes)
