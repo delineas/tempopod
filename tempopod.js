@@ -4,45 +4,48 @@ const feedUrl =
   args[1] ||
   "https://raw.githubusercontent.com/webreactiva-devs/reto-tempopod/main/feed/webreactiva.xml";
 
-fetch(feedUrl)
-  .then((response) => {
-    if (!response.ok) {
-      throw new Error(`Error al acceder al feed URL: ${feedUrl}`);
-    }
-    return response.text();
-  })
-  .then((str) => {
-    const episodes = [];
-    const itemRegex = /<item>(.*?)<\/item>/gs;
-    let itemMatch;
-    while ((itemMatch = itemRegex.exec(str)) !== null) {
-      const episodeContent = itemMatch[1];
-      const titleMatch = episodeContent.match(/<title>(.*?)<\/title>/);
-      const durationMatch = episodeContent.match(
-        /<itunes:duration>(.*?)<\/itunes:duration>/
-      );
-      if (titleMatch && durationMatch) {
-        episodes.push({
-          title: titleMatch[1],
-          duration: durationMatch ? parseDuration(durationMatch[1]) : undefined,
-        });
-      }
-    }
-
-    if (episodes.length === 0) {
-      throw new Error("El feed no contiene items.");
-    }
-
-    const episodesWithDuration = episodes.filter(
-      (e) => e.duration !== undefined
-    );
-
-    return selectEpisodes(episodesWithDuration, selectedTempo);
-  })
+fetchFeed(feedUrl)
+  .then((episodes) => selectEpisodes(episodes, selectedTempo))
   .then((selectedEpisodes) =>
     console.log("Episodios seleccionados:", selectedEpisodes)
   )
   .catch((error) => console.error(error));
+
+export async function fetchFeed(url) {
+  return fetch(url)
+    .then((response) => {
+      if (!response.ok) {
+        throw new Error(`Error al acceder al feed URL: ${url}`);
+      }
+      return response.text();
+    })
+    .then(parseFeed);
+}
+
+export function parseFeed(feedXml) {
+  const episodes = [];
+  const itemRegex = /<item>(.*?)<\/item>/gs;
+  let itemMatch;
+  while ((itemMatch = itemRegex.exec(feedXml)) !== null) {
+    const episodeContent = itemMatch[1];
+    const titleMatch = episodeContent.match(/<title>(.*?)<\/title>/);
+    const durationMatch = episodeContent.match(
+      /<itunes:duration>(.*?)<\/itunes:duration>/
+    );
+    if (titleMatch && durationMatch) {
+      episodes.push({
+        title: titleMatch[1],
+        duration: durationMatch ? parseDuration(durationMatch[1]) : undefined,
+      });
+    }
+  }
+
+  if (episodes.length === 0) {
+    throw new Error("El feed no contiene items.");
+  }
+
+  return episodes;
+}
 
 export function parseDuration(durationStr) {
   const parts = durationStr.split(":").map(Number);
