@@ -1,8 +1,8 @@
 {
   "name": "tempopod",
   "version": "1.0.0",
-  "description": "## Modo de empleo",
-  "main": "tempopod.js",
+  "description": "Podcast episode selector by time",
+  "main": "main.js",
   "type": "module",
   "scripts": {
     "test": "vitest"
