@@ -65,6 +65,19 @@ describe("selectEpisodes", () => {
 });
 
 describe("fetchFeed", () => {
+
+  it("should throw an error if the response is not ok", async () => {
+    const fakeUrl = "https://example.com/feed";
+
+    fetch.mockResolvedValueOnce({
+      ok: false,
+    });
+
+    await expect(fetchFeed(fakeUrl)).rejects.toThrow(
+      `Error al acceder al feed URL: ${fakeUrl}`
+    );
+  });
+
   it("handles no episodes", async () => {
     const emptyFeed = "<rss><channel></channel></rss>";
     fetch.mockResolvedValueOnce({
