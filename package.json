@@ -1,0 +1,12 @@
+{
+  "name": "tempopod",
+  "version": "1.0.0",
+  "description": "## Modo de empleo",
+  "main": "tempopod.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}
