@@ -8,31 +8,31 @@
 ## Modo de empleo
 
 ```
-node tempopod.js 45 https://raw.githubusercontent.com/webreactiva-devs/reto-tempopod/main/feed/webreactiva.xml
+node main.js 45 https://raw.githubusercontent.com/webreactiva-devs/reto-tempopod/main/feed/webreactiva.xml
 ```
 
 ### Feed vacío
 
 ```
-node tempopod.js 45 https://raw.githubusercontent.com/webreactiva-devs/reto-tempopod/main/feed/empty.xml 
+node main.js 45 https://raw.githubusercontent.com/webreactiva-devs/reto-tempopod/main/feed/empty.xml 
 ```
 
 ### No hay episodios de esa duración
 
 ```
-node tempopod.js 3 https://raw.githubusercontent.com/webreactiva-devs/reto-tempopod/main/feed/webreactiva.xml
+node main.js 3 https://raw.githubusercontent.com/webreactiva-devs/reto-tempopod/main/feed/webreactiva.xml
 ```
 
 ### Tag <itunes:duration> en formato MM:SS
 
 ```
-node tempopod.js 45 https://raw.githubusercontent.com/webreactiva-devs/reto-tempopod/main/feed/duration-in-minutes-and-seconds.xml
+node main.js 45 https://raw.githubusercontent.com/webreactiva-devs/reto-tempopod/main/feed/duration-in-minutes-and-seconds.xml
 ```
 
 ### Tag <itunes:duration> no existe
 
 ```
-node tempopod.js 45 https://raw.githubusercontent.com/webreactiva-devs/reto-tempopod/main/feed/episodes-whithout-duration.xml
+node main.js 45 https://raw.githubusercontent.com/webreactiva-devs/reto-tempopod/main/feed/episodes-whithout-duration.xml
 ```
 
 ## Tests
