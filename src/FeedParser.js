@@ -1,4 +1,5 @@
 import { parseDuration } from "./utils.js";
+import Episode from "./domain/Episode.js";
 
 export default class FeedParser {
   async fetchAndParse(url) {
@@ -24,11 +25,13 @@ export default class FeedParser {
       const linkMatch = episodeContent.match(/<link>(.*?)<\/link>/);
 
       if (titleMatch) {
-        episodes.push({
-          title: titleMatch[1],
-          duration: durationMatch ? parseDuration(durationMatch[1]) : undefined,
-          link: linkMatch ? linkMatch[1] : undefined,
-        });
+        episodes.push(
+          new Episode(
+            titleMatch[1],
+            durationMatch ? parseDuration(durationMatch[1]) : undefined,
+            linkMatch ? linkMatch[1] : undefined
+          )
+        );
       }
     }
 

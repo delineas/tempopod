@@ -25,11 +25,7 @@ export default class EpisodeSelector {
 
     for (let episode of episodes) {
       if (totalTime + episode.duration <= this.tempo * 60) {
-        this.selected.push({
-          title: episode.title,
-          duration: episode.duration,
-          link: episode.link,
-        });
+        this.selected.push(episode);
         totalTime += episode.duration;
       }
     }
