@@ -5,29 +5,11 @@ import FeedParser from "../src/FeedParser";
 global.fetch = vi.fn();
 
 describe("FeedParser", () => {
-  it("should throw an error if the response is not ok", async () => {
-    const fakeUrl = "https://example.com/feed";
-    const parser = new FeedParser();
-
-    fetch.mockResolvedValueOnce({ ok: false });
-
-    await expect(parser.fetchAndParse(fakeUrl)).rejects.toThrow(
-      `Error al acceder al feed URL: ${fakeUrl}`
-    );
-  });
-
   it("handles no episodes", async () => {
     const emptyFeed = "<rss><channel></channel></rss>";
     const parser = new FeedParser();
 
-    fetch.mockResolvedValueOnce({
-      ok: true,
-      text: () => Promise.resolve(emptyFeed),
-    });
-
-    await expect(
-      parser.fetchAndParse("http://example.com/empty.xml")
-    ).rejects.toThrow();
+    expect(() => parser.parse(emptyFeed)).toThrow();
   });
 
   it("parses <itunes:duration> in MM:SS format correctly", async () => {
@@ -35,14 +17,7 @@ describe("FeedParser", () => {
       "<rss><channel><item><title>Episode 1</title><itunes:duration>15:30</itunes:duration></item></channel></rss>";
     const parser = new FeedParser();
 
-    fetch.mockResolvedValueOnce({
-      ok: true,
-      text: () => Promise.resolve(feedWithMMSSDuration),
-    });
-
-    const episodes = await parser.fetchAndParse(
-      "http://example.com/mmss-duration.xml"
-    );
+    const episodes = parser.parse(feedWithMMSSDuration);
     expect(episodes[0].duration).toBe(930); // 15 minutes and 30 seconds
   });
 
@@ -51,14 +26,7 @@ describe("FeedParser", () => {
       "<rss><channel><item><title>Episode 1</title></item><item><title>Episode 2</title><itunes:duration>1600</itunes:duration></item></channel></rss>";
     const parser = new FeedParser();
 
-    fetch.mockResolvedValueOnce({
-      ok: true,
-      text: () => Promise.resolve(feedWithoutDurationTag),
-    });
-
-    const episodes = await parser.fetchAndParse(
-      "http://example.com/missing-duration.xml"
-    );
+    const episodes = parser.parse(feedWithoutDurationTag);
 
     expect(
       episodes.find((e) => e.title === "Episode 1").duration
@@ -85,15 +53,8 @@ describe("Output format", () => {
       </rss>
     `;
 
-    global.fetch = vi.fn().mockResolvedValue({
-      ok: true,
-      text: () => Promise.resolve(feedContent),
-    });
-
     const parser = new FeedParser();
-    const selectedEpisodes = await parser.fetchAndParse(
-      "http://example.com/feed"
-    );
+    const selectedEpisodes = parser.parse(feedContent);
 
     selectedEpisodes.forEach((episode) => {
       expect(episode).toHaveProperty("title");
