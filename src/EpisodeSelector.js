@@ -1,3 +1,5 @@
+import SelectorError from "./errors/SelectorError.js";
+
 export default class EpisodeSelector {
   constructor(episodes, tempo) {
     this.episodes = episodes;
@@ -7,7 +9,7 @@ export default class EpisodeSelector {
 
   selectEpisodes() {
     if (this.episodes.length === 0) {
-      throw new Error("No hay episodios disponibles para seleccionar.");
+      throw new SelectorError("No hay episodios disponibles para seleccionar.");
     }
 
     const minDuration = Math.min(
@@ -15,7 +17,7 @@ export default class EpisodeSelector {
     );
 
     if (this.tempo * 60 < minDuration) {
-      throw new Error(
+      throw new SelectorError(
         `El tiempo seleccionado es menor que el episodio más corto de ${minDuration} segundos.`
       );
     }

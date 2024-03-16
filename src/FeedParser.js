@@ -1,11 +1,12 @@
 import { parseDuration } from "./utils.js";
 import Episode from "./domain/Episode.js";
+import FeedError from "./errors/FeedError.js";
 
 export default class FeedParser {
   async fetchAndParse(url) {
     const response = await fetch(url);
     if (!response.ok) {
-      throw new Error(`Error al acceder al feed URL: ${url}`);
+      throw new FeedError(`Error al acceder al feed URL: ${url}`);
     }
     const feedXml = await response.text();
     return this.parseFeed(feedXml);
@@ -36,7 +37,7 @@ export default class FeedParser {
     }
 
     if (episodes.length === 0) {
-      throw new Error("El feed no contiene items.");
+      throw new FeedError("El feed no contiene items.");
     }
 
     return episodes;

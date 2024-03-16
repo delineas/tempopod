@@ -1,5 +1,7 @@
 import FeedParser from "./src/FeedParser.js";
 import EpisodeSelector from "./src/EpisodeSelector.js";
+import FeedError from "./src/errors/FeedError.js";
+import SelectorError from "./src/errors/SelectorError.js";
 
 const defaultFeedUrl =
   "https://raw.githubusercontent.com/webreactiva-devs/reto-tempopod/main/feed/webreactiva.xml";
@@ -27,7 +29,13 @@ async function main() {
 
     console.log("Episodios seleccionados:", selectedEpisodes);
   } catch (error) {
-    console.error(error);
+    if (error instanceof FeedError) {
+      console.error("Error de Feed:", error.message);
+    } else if (error instanceof SelectorError) {
+      console.error("Error de selección de episodios:", error.message);
+    } else {
+      console.error(error);
+    }
   }
 }
 
