@@ -1,18 +1,9 @@
-import { parseDuration } from "./utils.js";
 import Episode from "./domain/Episode.js";
+import { parseDuration } from "./utils.js";
 import FeedError from "./errors/FeedError.js";
 
 export default class FeedParser {
-  async fetchAndParse(url) {
-    const response = await fetch(url);
-    if (!response.ok) {
-      throw new FeedError(`Error al acceder al feed URL: ${url}`);
-    }
-    const feedXml = await response.text();
-    return this.parseFeed(feedXml);
-  }
-
-  parseFeed(feedXml) {
+  parse(feedXml) {
     const episodes = [];
     const itemRegex = /<item>(.*?)<\/item>/gs;
     let itemMatch;
