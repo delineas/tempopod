@@ -1,5 +1,7 @@
 # Solución al [Reto Tempopod de Web Reactiva](https://github.com/webreactiva-devs/reto-tempopod)
 
+> Comento las decisiones de diseño y código tomadas [aquí](https://github.com/delineas/tempopod/issues/1).
+
 ## Instalación
 
 - Clonar el repostiorio
